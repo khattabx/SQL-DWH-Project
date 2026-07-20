@@ -1,3 +1,5 @@
+DROP PROCEDURE silver.updated_load_silver2;
+
 CREATE OR ALTER PROCEDURE silver.load_silver AS
 BEGIN
     DECLARE @start_time DATETIME, @end_time DATETIME, @batch_start_time DATETIME, @batch_end_time DATETIME; 
@@ -113,9 +115,10 @@ FROM bronze.crm_prd_info
 -- ==========================================
 -- -- Table: silver.crm_sales_details
 -- ==========================================
-        SET @end_time = GETDATE();
-        PRINT '>> Load Duration: ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
-        PRINT '>> -------------';
+        SET @start_time = GETDATE();
+		PRINT '>> Truncating Table: silver.crm_prd_info';
+		TRUNCATE TABLE silver.crm_sales_details;
+		PRINT '>> Inserting Data Into: silver.crm_prd_info';
 INSERT INTO
     silver.crm_sales_details (
         sls_ord_num,
@@ -258,3 +261,4 @@ FROM bronze.erp_px_cat_g1v2;
         END
 
 EXEC silver.load_silver
+
